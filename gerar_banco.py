@@ -5,6 +5,16 @@ Uso:
     python3 gerar_banco.py          # valida e gera app/banco.js
     python3 gerar_banco.py --check  # apenas valida, não escreve nada
 
+As pastas dentro de banco/ viram grupos no app, em qualquer profundidade:
+
+    banco/Exatas/matematica.json          -> grupo "Exatas"
+    banco/Concursos/Direito/const.json    -> grupo "Concursos > Direito"
+    banco/avulso.json                     -> sem grupo (fica no topo)
+
+Cada pasta pode ter um arquivo opcional _pasta.json para definir nome de
+exibição, descrição e ordem. Arquivos começados por "_" nunca são lidos
+como banco de questões.
+
 O app web é aberto direto do disco (file://), e navegadores bloqueiam
 fetch() de arquivos locais. Por isso o banco é empacotado num .js que
 apenas atribui os dados a window.BANCO_QUESTOES.
@@ -20,6 +30,7 @@ RAIZ = Path(__file__).resolve().parent
 DIR_BANCO = RAIZ / "banco"
 SAIDA = RAIZ / "app" / "banco.js"
 
+ARQUIVO_PASTA = "_pasta.json"
 DIFICULDADES = {"facil", "medio", "dificil"}
 MIN_ALTERNATIVAS = 2
 MAX_ALTERNATIVAS = 6
@@ -106,33 +117,85 @@ def validar_questao(q: object, onde: str) -> dict:
     }
 
 
-def carregar_tema(caminho: Path) -> dict:
+def ler_json(caminho: Path, rotulo: str) -> object:
     try:
-        dados = json.loads(caminho.read_text(encoding="utf-8"))
+        return json.loads(caminho.read_text(encoding="utf-8"))
     except json.JSONDecodeError as e:
-        raise ErroDeValidacao(f"{caminho.name}: JSON inválido — {e}") from e
+        raise ErroDeValidacao(f"{rotulo}: JSON inválido — {e}") from e
 
-    _exigir(isinstance(dados, dict), f"{caminho.name}: o arquivo deve conter um objeto")
+
+def carregar_tema(caminho: Path) -> dict:
+    rotulo = caminho.relative_to(DIR_BANCO).as_posix()
+    dados = ler_json(caminho, rotulo)
+
+    _exigir(isinstance(dados, dict), f"{rotulo}: o arquivo deve conter um objeto")
+    assert isinstance(dados, dict)
     _exigir(
         isinstance(dados.get("tema"), str) and dados["tema"].strip() != "",
-        f"{caminho.name}: falta o campo 'tema'",
+        f"{rotulo}: falta o campo 'tema'",
     )
     _exigir(
         isinstance(dados.get("questoes"), list) and dados["questoes"],
-        f"{caminho.name}: 'questoes' deve ser uma lista com ao menos uma questão",
+        f"{rotulo}: 'questoes' deve ser uma lista com ao menos uma questão",
+    )
+
+    ordem = dados.get("ordem", 0)
+    _exigir(
+        isinstance(ordem, int) and not isinstance(ordem, bool),
+        f"{rotulo}: 'ordem' deve ser um número inteiro",
     )
 
     questoes = [
-        validar_questao(q, f"{caminho.name} → questão {i + 1}")
+        validar_questao(q, f"{rotulo} → questão {i + 1}")
         for i, q in enumerate(dados["questoes"])
     ]
 
     return {
-        "arquivo": caminho.stem,
+        # Chave estável: dois temas homônimos em pastas diferentes não colidem.
+        "chave": rotulo,
+        "caminho": list(caminho.relative_to(DIR_BANCO).parts[:-1]),
         "tema": dados["tema"].strip(),
         "descricao": str(dados.get("descricao", "")).strip(),
+        "ordem": ordem,
         "questoes": questoes,
     }
+
+
+def carregar_pasta(caminho_pasta: Path) -> dict:
+    partes = list(caminho_pasta.relative_to(DIR_BANCO).parts)
+    meta = {
+        "caminho": partes,
+        "nome": partes[-1],
+        "descricao": "",
+        "ordem": 0,
+    }
+
+    arquivo = caminho_pasta / ARQUIVO_PASTA
+    if not arquivo.is_file():
+        return meta
+
+    rotulo = arquivo.relative_to(DIR_BANCO).as_posix()
+    dados = ler_json(arquivo, rotulo)
+    _exigir(isinstance(dados, dict), f"{rotulo}: o arquivo deve conter um objeto")
+    assert isinstance(dados, dict)
+
+    if "nome" in dados:
+        _exigir(
+            isinstance(dados["nome"], str) and dados["nome"].strip() != "",
+            f"{rotulo}: 'nome' deve ser um texto não vazio",
+        )
+        meta["nome"] = dados["nome"].strip()
+    if "descricao" in dados:
+        _exigir(isinstance(dados["descricao"], str), f"{rotulo}: 'descricao' deve ser um texto")
+        meta["descricao"] = dados["descricao"].strip()
+    if "ordem" in dados:
+        _exigir(
+            isinstance(dados["ordem"], int) and not isinstance(dados["ordem"], bool),
+            f"{rotulo}: 'ordem' deve ser um número inteiro",
+        )
+        meta["ordem"] = dados["ordem"]
+
+    return meta
 
 
 def main(argv: list[str]) -> int:
@@ -142,9 +205,14 @@ def main(argv: list[str]) -> int:
         print(f"erro: pasta '{DIR_BANCO.name}/' não encontrada", file=sys.stderr)
         return 1
 
-    arquivos = sorted(DIR_BANCO.glob("*.json"))
+    arquivos = sorted(
+        p for p in DIR_BANCO.rglob("*.json") if not p.name.startswith("_")
+    )
     if not arquivos:
-        print(f"erro: nenhum arquivo .json em '{DIR_BANCO.name}/'", file=sys.stderr)
+        print(
+            f"erro: nenhum arquivo .json de questões em '{DIR_BANCO.name}/'",
+            file=sys.stderr,
+        )
         return 1
 
     temas: list[dict] = []
@@ -155,6 +223,20 @@ def main(argv: list[str]) -> int:
         except ErroDeValidacao as e:
             erros.append(str(e))
 
+    # Toda pasta que contenha temas (e as pastas-pai dela) vira um grupo.
+    caminhos_pastas: set[tuple[str, ...]] = set()
+    for tema in temas:
+        partes = tuple(tema["caminho"])
+        for i in range(1, len(partes) + 1):
+            caminhos_pastas.add(partes[:i])
+
+    pastas: list[dict] = []
+    for partes in sorted(caminhos_pastas):
+        try:
+            pastas.append(carregar_pasta(DIR_BANCO.joinpath(*partes)))
+        except ErroDeValidacao as e:
+            erros.append(str(e))
+
     vistos: dict[str, str] = {}
     for tema in temas:
         for q in tema["questoes"]:
@@ -162,10 +244,10 @@ def main(argv: list[str]) -> int:
             if anterior:
                 erros.append(
                     f"id duplicado {q['id']!r}: aparece em {anterior} e em "
-                    f"{tema['arquivo']}.json"
+                    f"{tema['chave']}"
                 )
             else:
-                vistos[q["id"]] = f"{tema['arquivo']}.json"
+                vistos[q["id"]] = tema["chave"]
 
     if erros:
         print("Foram encontrados problemas no banco de questões:\n", file=sys.stderr)
@@ -173,26 +255,51 @@ def main(argv: list[str]) -> int:
             print(f"  - {e}", file=sys.stderr)
         return 1
 
-    temas.sort(key=lambda t: t["tema"].lower())
-    total = sum(len(t["questoes"]) for t in temas)
+    pastas.sort(key=lambda p: (len(p["caminho"]), p["ordem"], p["nome"].lower()))
 
+    nomes = {tuple(p["caminho"]): p["nome"] for p in pastas}
+    ordens = {tuple(p["caminho"]): p["ordem"] for p in pastas}
+
+    def chave_pasta(partes: list[str]) -> list[tuple[int, str]]:
+        """Ordena uma pasta pela cadeia (ordem, nome) de cada ancestral, para
+        que o 'ordem' de _pasta.json valha também nos níveis de cima."""
+        return [
+            (
+                ordens.get(tuple(partes[: i + 1]), 0),
+                nomes.get(tuple(partes[: i + 1]), partes[i]).lower(),
+            )
+            for i in range(len(partes))
+        ]
+
+    temas.sort(key=lambda t: (chave_pasta(t["caminho"]), t["ordem"], t["tema"].lower()))
+    pastas.sort(key=lambda p: chave_pasta(p["caminho"]))
     for tema in temas:
-        contagem = {d: 0 for d in sorted(DIFICULDADES)}
-        for q in tema["questoes"]:
-            contagem[q["dificuldade"]] += 1
-        detalhe = ", ".join(f"{n} {d}" for d, n in contagem.items() if n)
-        print(f"  {tema['tema']}: {len(tema['questoes'])} questões ({detalhe})")
-    print(f"\nTotal: {total} questões em {len(temas)} tema(s).")
+        rotulo_pasta = " › ".join(
+            nomes.get(tuple(tema["caminho"][: i + 1]), tema["caminho"][i])
+            for i in range(len(tema["caminho"]))
+        )
+        prefixo = f"{rotulo_pasta} › " if rotulo_pasta else ""
+        print(f"  {prefixo}{tema['tema']}: {len(tema['questoes'])} questões")
+
+    total = sum(len(t["questoes"]) for t in temas)
+    print(
+        f"\nTotal: {total} questões em {len(temas)} tema(s) "
+        f"e {len(pastas)} pasta(s)."
+    )
 
     if apenas_checar:
         print("Validação concluída (nada foi escrito).")
         return 0
 
     SAIDA.parent.mkdir(parents=True, exist_ok=True)
-    conteudo = json.dumps(temas, ensure_ascii=False, indent=2)
+    conteudo = json.dumps(
+        {"versao": 2, "pastas": pastas, "temas": temas},
+        ensure_ascii=False,
+        indent=2,
+    )
     SAIDA.write_text(
         "// Arquivo gerado automaticamente por gerar_banco.py — não edite à mão.\n"
-        "// Edite os arquivos em banco/*.json e rode: python3 gerar_banco.py\n"
+        "// Edite os arquivos em banco/ e rode: python3 gerar_banco.py\n"
         f"window.BANCO_QUESTOES = {conteudo};\n",
         encoding="utf-8",
     )

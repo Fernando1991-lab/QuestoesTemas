@@ -18,7 +18,8 @@
     <section id="tela-config" class="tela">
       <div class="cartao">
         <h2>Temas</h2>
-        <p class="ajuda">Escolha um ou mais temas para o simulado.</p>
+        <p class="ajuda">Escolha um ou mais temas. Clique no nome de uma pasta
+           para abrir ou fechar; na caixa dela, para marcar tudo que está dentro.</p>
         <div class="acoes-inline">
           <button type="button" class="btn-link" id="btn-todos">Selecionar todos</button>
           <button type="button" class="btn-link" id="btn-nenhum">Limpar seleção</button>
@@ -80,6 +81,7 @@
 
       <div class="cartao cartao-questao">
         <div class="etiquetas">
+          <span id="etiqueta-pasta" class="etiqueta secundaria" hidden></span>
           <span id="etiqueta-tema" class="etiqueta"></span>
           <span id="etiqueta-dificuldade" class="etiqueta"></span>
         </div>
@@ -112,7 +114,8 @@
   </main>
 
   <footer class="rodape">
-    <p>Banco local em <code>banco/*.json</code>. Depois de editar, rode <code>python3 gerar_banco.py</code>.</p>
+    <p>Banco local em <code>banco/</code> — as subpastas viram grupos.
+       Depois de editar, rode <code>python3 gerar_banco.py</code>.</p>
   </footer>
 
   <script src="app/banco.js"></script>

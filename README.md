@@ -21,10 +21,53 @@ Atalhos durante o simulado: teclas `1`–`6` respondem, `Enter` avança.
 O desempenho acumulado por tema fica salvo no navegador (localStorage) e aparece
 na tela inicial. O botão **Apagar histórico** zera tudo.
 
+## Organizando em pastas
+
+As pastas dentro de `banco/` viram grupos no app, em qualquer profundidade:
+
+```
+banco/
+├── Linguagens/
+│   ├── _pasta.json          (opcional: nome, descrição e ordem do grupo)
+│   └── portugues.json
+├── Exatas/
+│   ├── matematica.json
+│   └── Nível Avançado/      pastas podem ser aninhadas à vontade
+│       └── calculo.json
+└── avulso.json              arquivo solto na raiz aparece sem grupo
+```
+
+No app, cada pasta vira um grupo que você abre, fecha e marca por inteiro.
+A caixa da pasta fica com um traço quando só parte dos temas dentro dela está
+selecionada. O app lembra quais grupos você deixou abertos.
+
+Para reorganizar, basta mover os arquivos e rodar `python3 gerar_banco.py`
+de novo — nada no código precisa mudar.
+
+### Nomeando e ordenando as pastas
+
+Por padrão a pasta usa o próprio nome da pasta no disco, e os grupos aparecem
+em ordem alfabética. Para mudar isso, coloque um `_pasta.json` dentro dela:
+
+```json
+{
+  "nome": "Linguagens",
+  "descricao": "Língua portuguesa, literatura e interpretação.",
+  "ordem": 1
+}
+```
+
+Todos os campos são opcionais. `ordem` é um número: quanto menor, mais acima o
+grupo aparece; empates caem na ordem alfabética. Os temas também aceitam um
+campo `"ordem"` para a mesma finalidade.
+
+Arquivos cujo nome começa com `_` nunca são lidos como banco de questões —
+é assim que o `_pasta.json` não vira um tema.
+
 ## Como adicionar ou trocar questões
 
-Cada tema é um arquivo em `banco/`. Para criar um tema novo, crie um arquivo
-`banco/meu-tema.json` e depois rode:
+Cada tema é um arquivo `.json` dentro de `banco/` (na raiz ou em qualquer
+subpasta). Para criar um tema novo, crie o arquivo e depois rode:
 
 ```bash
 python3 gerar_banco.py
@@ -64,6 +107,7 @@ python3 gerar_banco.py --check
 |---|---|---|
 | `tema` | sim | Nome exibido na seleção de temas. |
 | `descricao` | não | Aparece embaixo do nome do tema. |
+| `ordem` | não | Número que ordena o tema dentro do grupo. Padrão: 0. |
 | `id` | sim | Único em **todo** o banco; o validador acusa duplicatas. |
 | `enunciado` | sim | Texto da pergunta. |
 | `alternativas` | sim | De 2 a 6 opções, sem repetições. |
@@ -80,6 +124,8 @@ Detalhes que evitam erro:
 - Não precisa embaralhar as questões: o app sorteia a ordem também.
 - O JSON precisa ser válido — atenção a vírgulas sobrando e aspas.
   Se algo estiver errado, `gerar_banco.py` aponta o arquivo e a questão.
+- O `id` precisa ser único no banco inteiro, não só dentro do arquivo.
+  Dois temas em pastas diferentes não podem repetir o mesmo `id`.
 
 ## Estrutura do projeto
 
@@ -88,18 +134,20 @@ index.html          telas do app
 app/estilo.css      estilos (tema claro e escuro, conforme o sistema)
 app/app.js          lógica do simulado
 app/banco.js        GERADO — não edite à mão
-banco/*.json        as questões, um arquivo por tema
+banco/              as questões: um arquivo por tema, pastas viram grupos
+banco/**/_pasta.json  opcional: nome, descrição e ordem de um grupo
 gerar_banco.py      valida os JSON e gera app/banco.js
 ```
 
 ## Temas incluídos
 
 Os três temas atuais são **exemplos de partida** para o app já abrir
-funcionando. Podem ser editados ou apagados à vontade:
+funcionando. Podem ser editados, movidos ou apagados à vontade — inclusive as
+pastas, que só existem para demonstrar o agrupamento:
 
-- Português — 12 questões
-- Matemática e Raciocínio Lógico — 12 questões
-- História do Brasil — 12 questões
+- Linguagens › Português — 12 questões
+- Exatas › Matemática e Raciocínio Lógico — 12 questões
+- Humanas › História do Brasil — 12 questões
 
 ## Requisitos
 

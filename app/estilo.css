@@ -103,7 +103,7 @@ button { font: inherit; cursor: pointer; }
 .acoes-inline { display: flex; gap: 16px; margin-bottom: 10px; }
 
 /* ===== Seleção de temas e opções ===== */
-.lista-temas { display: grid; gap: 8px; }
+.lista-temas { display: grid; gap: 10px; }
 
 .opcao, .item-tema {
   display: flex;
@@ -122,6 +122,64 @@ button { font: inherit; cursor: pointer; }
 .item-tema .info-tema { display: block; color: var(--texto-fraco); font-size: .85rem; }
 
 .grupo-radio { display: grid; gap: 8px; }
+
+/* ===== Pastas (grupos de temas) ===== */
+.pasta {
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--superficie);
+  overflow: hidden;
+}
+
+.cabecalho-pasta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--superficie-2);
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;          /* esconde o triângulo padrão do <details> */
+  user-select: none;
+}
+.cabecalho-pasta::-webkit-details-marker { display: none; }
+.cabecalho-pasta:hover { color: var(--destaque); }
+
+/* Seta desenhada à mão, que gira ao abrir a pasta. */
+.cabecalho-pasta::after {
+  content: "";
+  order: -1;
+  width: 0;
+  height: 0;
+  border-left: 5px solid currentColor;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transition: transform .15s ease;
+  flex: none;
+}
+.pasta[open] > .cabecalho-pasta::after { transform: rotate(90deg); }
+
+.cabecalho-pasta input { margin: 0; accent-color: var(--destaque); flex: none; }
+.nome-pasta { margin-right: auto; }
+.contagem-pasta { color: var(--texto-fraco); font-weight: 400; font-size: .8rem; }
+
+.descricao-pasta {
+  margin: 0;
+  padding: 8px 12px 0 40px;
+  color: var(--texto-fraco);
+  font-size: .82rem;
+}
+
+/* A borda esquerda faz as vezes de fio ligando os itens à pasta. */
+.conteudo-pasta {
+  display: grid;
+  gap: 8px;
+  margin: 10px 12px 12px 22px;
+  padding-left: 12px;
+  border-left: 1px solid var(--borda);
+}
+
+.etiqueta.secundaria { background: var(--superficie-2); color: var(--texto-fraco); }
 
 .linha-quantidade { display: flex; align-items: center; gap: 14px; }
 .linha-quantidade input[type=range] { flex: 1; accent-color: var(--destaque); }

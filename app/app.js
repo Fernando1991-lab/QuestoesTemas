@@ -3,11 +3,33 @@
 (function () {
   "use strict";
 
-  var CHAVE_HISTORICO = "questoes-por-tema:historico:v1";
+  var CHAVE_HISTORICO = "questoes-por-tema:historico:v2";
+  var CHAVE_PASTAS = "questoes-por-tema:pastas-abertas:v1";
   var LETRAS = ["A", "B", "C", "D", "E", "F"];
   var ROTULO_DIFICULDADE = { facil: "Fácil", medio: "Média", dificil: "Difícil" };
+  var SEPARADOR = " › ";
 
-  var banco = Array.isArray(window.BANCO_QUESTOES) ? window.BANCO_QUESTOES : [];
+  /* ---------- leitura do banco ---------- */
+
+  var bruto = window.BANCO_QUESTOES;
+  var temas = [];
+  var pastas = [];
+
+  if (Array.isArray(bruto)) {
+    // Formato antigo (sem pastas): lista de temas na raiz.
+    temas = bruto.map(function (t, i) {
+      return {
+        chave: t.arquivo || String(i),
+        caminho: [],
+        tema: t.tema,
+        descricao: t.descricao || "",
+        questoes: t.questoes || []
+      };
+    });
+  } else if (bruto && typeof bruto === "object") {
+    temas = Array.isArray(bruto.temas) ? bruto.temas : [];
+    pastas = Array.isArray(bruto.pastas) ? bruto.pastas : [];
+  }
 
   var estado = {
     questoes: [],      // questões sorteadas para a rodada atual
@@ -25,11 +47,67 @@
 
   function $(id) { return document.getElementById(id); }
 
+  function plural(n) { return n + (n === 1 ? " questão" : " questões"); }
+
   function mostrarTela(id) {
     ["tela-config", "tela-quiz", "tela-resultado"].forEach(function (t) {
       $(t).hidden = t !== id;
     });
     window.scrollTo(0, 0);
+  }
+
+  /* ---------- árvore de pastas ---------- */
+
+  var porChave = {};   // chave do tema -> tema
+  var arvore = montarArvore();
+
+  function montarArvore() {
+    var raiz = { caminho: [], nome: "", descricao: "", filhos: [], temas: [] };
+    var indice = { "": raiz };
+
+    // Pastas rasas primeiro, para o pai já existir quando o filho chegar.
+    // O sort é estável, então a ordem definida em _pasta.json é preservada.
+    pastas
+      .slice()
+      .sort(function (a, b) { return a.caminho.length - b.caminho.length; })
+      .forEach(function (p) {
+        var no = {
+          caminho: p.caminho,
+          nome: p.nome,
+          descricao: p.descricao || "",
+          filhos: [],
+          temas: []
+        };
+        indice[p.caminho.join("/")] = no;
+        var pai = indice[p.caminho.slice(0, -1).join("/")] || raiz;
+        pai.filhos.push(no);
+      });
+
+    temas.forEach(function (t) {
+      var pai = indice[(t.caminho || []).join("/")] || raiz;
+      pai.temas.push(t);
+      t.rotuloPasta = (t.caminho || [])
+        .map(function (_, i) {
+          var no = indice[t.caminho.slice(0, i + 1).join("/")];
+          return no ? no.nome : t.caminho[i];
+        })
+        .join(SEPARADOR);
+      t.rotuloCompleto = t.rotuloPasta
+        ? t.rotuloPasta + SEPARADOR + t.tema
+        : t.tema;
+      porChave[t.chave] = t;
+    });
+
+    return raiz;
+  }
+
+  function contarQuestoes(no) {
+    var total = no.temas.reduce(function (soma, t) {
+      return soma + t.questoes.length;
+    }, 0);
+    return no.filhos.reduce(function (soma, f) {
+      return soma + contarQuestoes(f);
+    }, total);
   }
 
   /* ---------- utilidades ---------- */
@@ -50,7 +128,9 @@
     var indices = embaralhar(q.alternativas.map(function (_, i) { return i; }));
     return {
       id: q.id,
-      tema: tema,
+      tema: tema.tema,
+      pasta: tema.rotuloPasta,
+      rotulo: tema.rotuloCompleto,
       enunciado: q.enunciado,
       alternativas: indices.map(function (i) { return q.alternativas[i]; }),
       correta: indices.indexOf(q.correta),
@@ -59,7 +139,7 @@
     };
   }
 
-  function temasSelecionados() {
+  function chavesSelecionadas() {
     return Array.prototype.slice
       .call(document.querySelectorAll("input[name=tema]:checked"))
       .map(function (el) { return el.value; });
@@ -72,26 +152,141 @@
 
   // Todas as questões que atendem aos filtros atuais da tela de configuração.
   function questoesFiltradas() {
-    var temas = temasSelecionados();
     var dificuldade = valorRadio("dificuldade");
     var resultado = [];
-    banco.forEach(function (t) {
-      if (temas.indexOf(t.tema) === -1) return;
-      t.questoes.forEach(function (q) {
+    chavesSelecionadas().forEach(function (chave) {
+      var tema = porChave[chave];
+      if (!tema) return;
+      tema.questoes.forEach(function (q) {
         if (dificuldade !== "todas" && q.dificuldade !== dificuldade) return;
-        resultado.push({ questao: q, tema: t.tema });
+        resultado.push({ questao: q, tema: tema });
       });
     });
     return resultado;
   }
 
+  /* ---------- estado aberto/fechado das pastas ---------- */
+
+  function lerJson(chave, padrao) {
+    try {
+      var texto = localStorage.getItem(chave);
+      var dados = texto ? JSON.parse(texto) : padrao;
+      return dados && typeof dados === "object" ? dados : padrao;
+    } catch (e) {
+      return padrao;
+    }
+  }
+
+  function gravarJson(chave, valor) {
+    try {
+      localStorage.setItem(chave, JSON.stringify(valor));
+    } catch (e) {
+      /* modo privativo ou armazenamento bloqueado: o app segue funcionando */
+    }
+  }
+
+  function pastaAberta(chave) {
+    var abertas = lerJson(CHAVE_PASTAS, {});
+    return abertas[chave] !== false;  // aberta por padrão
+  }
+
+  function salvarPasta(chave, aberta) {
+    var abertas = lerJson(CHAVE_PASTAS, {});
+    abertas[chave] = aberta;
+    gravarJson(CHAVE_PASTAS, abertas);
+  }
+
   /* ---------- tela de configuração ---------- */
+
+  function criarTema(t) {
+    var label = document.createElement("label");
+    label.className = "item-tema";
+
+    var input = document.createElement("input");
+    input.type = "checkbox";
+    input.name = "tema";
+    input.value = t.chave;
+    input.checked = true;
+
+    var texto = document.createElement("span");
+    var nome = document.createElement("span");
+    nome.className = "nome-tema";
+    nome.textContent = t.tema;
+    var info = document.createElement("small");
+    info.className = "info-tema";
+    info.textContent =
+      plural(t.questoes.length) + (t.descricao ? " · " + t.descricao : "");
+
+    texto.appendChild(nome);
+    texto.appendChild(info);
+    label.appendChild(input);
+    label.appendChild(texto);
+    return label;
+  }
+
+  function criarPasta(no) {
+    var chave = no.caminho.join("/");
+    var det = document.createElement("details");
+    det.className = "pasta";
+    det.dataset.caminho = chave;
+    det.open = pastaAberta(chave);
+    det.addEventListener("toggle", function () { salvarPasta(chave, det.open); });
+
+    var sumario = document.createElement("summary");
+    sumario.className = "cabecalho-pasta";
+
+    var marca = document.createElement("input");
+    marca.type = "checkbox";
+    marca.className = "check-pasta";
+    marca.checked = true;
+    // Sem isto, clicar na caixa também abriria/fecharia a pasta.
+    marca.addEventListener("click", function (e) { e.stopPropagation(); });
+    marca.addEventListener("change", function () {
+      Array.prototype.forEach.call(
+        det.querySelectorAll("input[name=tema]"),
+        function (el) { el.checked = marca.checked; }
+      );
+      atualizarDisponiveis();
+    });
+
+    var titulo = document.createElement("span");
+    titulo.className = "nome-pasta";
+    titulo.textContent = no.nome;
+
+    var contagem = document.createElement("span");
+    contagem.className = "contagem-pasta";
+    contagem.textContent = plural(contarQuestoes(no));
+
+    sumario.appendChild(marca);
+    sumario.appendChild(titulo);
+    sumario.appendChild(contagem);
+    det.appendChild(sumario);
+
+    if (no.descricao) {
+      var desc = document.createElement("p");
+      desc.className = "descricao-pasta";
+      desc.textContent = no.descricao;
+      det.appendChild(desc);
+    }
+
+    var corpo = document.createElement("div");
+    corpo.className = "conteudo-pasta";
+    preencher(no, corpo);
+    det.appendChild(corpo);
+
+    return det;
+  }
+
+  function preencher(no, container) {
+    no.filhos.forEach(function (f) { container.appendChild(criarPasta(f)); });
+    no.temas.forEach(function (t) { container.appendChild(criarTema(t)); });
+  }
 
   function montarListaTemas() {
     var container = $("lista-temas");
     container.innerHTML = "";
 
-    if (!banco.length) {
+    if (!temas.length) {
       container.innerHTML =
         '<p class="aviso">Nenhuma questão carregada. Verifique se <code>app/banco.js</code> ' +
         "existe — para gerá-lo, rode <code>python3 gerar_banco.py</code>.</p>";
@@ -99,40 +294,34 @@
       return;
     }
 
-    banco.forEach(function (t) {
-      var label = document.createElement("label");
-      label.className = "item-tema";
+    preencher(arvore, container);
+  }
 
-      var input = document.createElement("input");
-      input.type = "checkbox";
-      input.name = "tema";
-      input.value = t.tema;
-      input.checked = true;
-
-      var texto = document.createElement("span");
-      var nome = document.createElement("span");
-      nome.className = "nome-tema";
-      nome.textContent = t.tema;
-      var info = document.createElement("small");
-      info.className = "info-tema";
-      info.textContent =
-        t.questoes.length + " questões" + (t.descricao ? " · " + t.descricao : "");
-
-      texto.appendChild(nome);
-      texto.appendChild(info);
-      label.appendChild(input);
-      label.appendChild(texto);
-      container.appendChild(label);
-    });
+  // Deixa cada caixa de pasta refletindo os temas que estão dentro dela:
+  // marcada, desmarcada, ou traço quando a seleção é parcial.
+  function atualizarEstadoPastas() {
+    Array.prototype.forEach.call(
+      document.querySelectorAll("details.pasta"),
+      function (det) {
+        var dentro = det.querySelectorAll("input[name=tema]");
+        var marcados = det.querySelectorAll("input[name=tema]:checked").length;
+        var marca = det.querySelector(".check-pasta");
+        if (!marca) return;
+        marca.checked = dentro.length > 0 && marcados === dentro.length;
+        marca.indeterminate = marcados > 0 && marcados < dentro.length;
+      }
+    );
   }
 
   function atualizarDisponiveis() {
+    atualizarEstadoPastas();
+
     var total = questoesFiltradas().length;
     var slider = $("qtd-questoes");
     var aviso = $("aviso-config");
 
     $("qtd-disponivel").textContent =
-      total + (total === 1 ? " questão disponível" : " questões disponíveis") +
+      plural(total) + (total === 1 ? " disponível" : " disponíveis") +
       " com os filtros atuais.";
 
     slider.max = Math.max(1, total);
@@ -143,7 +332,7 @@
     $("btn-comecar").disabled = semQuestoes;
     aviso.hidden = !semQuestoes;
     if (semQuestoes) {
-      aviso.textContent = temasSelecionados().length
+      aviso.textContent = chavesSelecionadas().length
         ? "Nenhuma questão combina com essa dificuldade nos temas escolhidos."
         : "Selecione pelo menos um tema.";
     }
@@ -183,6 +372,10 @@
     $("progresso").style.width = (estado.indice / total) * 100 + "%";
     $("placar-parcial").textContent =
       estado.modo === "imediato" ? estado.acertos + " acerto(s)" : "";
+
+    var etiquetaPasta = $("etiqueta-pasta");
+    etiquetaPasta.textContent = q.pasta || "";
+    etiquetaPasta.hidden = !q.pasta;
 
     $("etiqueta-tema").textContent = q.tema;
     var etiquetaDif = $("etiqueta-dificuldade");
@@ -309,7 +502,7 @@
       var cabecalho = document.createElement("div");
       cabecalho.className = "cabecalho-revisao";
       cabecalho.textContent =
-        (i + 1) + " · " + q.tema + " · " +
+        (i + 1) + " · " + q.rotulo + " · " +
         (ROTULO_DIFICULDADE[q.dificuldade] || q.dificuldade);
       item.appendChild(cabecalho);
 
@@ -354,38 +547,24 @@
 
   /* ---------- histórico (localStorage) ---------- */
 
-  function lerHistorico() {
-    try {
-      var bruto = localStorage.getItem(CHAVE_HISTORICO);
-      var dados = bruto ? JSON.parse(bruto) : {};
-      return dados && typeof dados === "object" ? dados : {};
-    } catch (e) {
-      return {};
-    }
-  }
-
   function registrarHistorico() {
-    var historico = lerHistorico();
+    var historico = lerJson(CHAVE_HISTORICO, {});
     estado.questoes.forEach(function (q, i) {
-      var registro = historico[q.tema] || { respondidas: 0, acertos: 0 };
+      var registro = historico[q.rotulo] || { respondidas: 0, acertos: 0 };
       registro.respondidas++;
       if (estado.respostas[i] === q.correta) registro.acertos++;
-      historico[q.tema] = registro;
+      historico[q.rotulo] = registro;
     });
-    try {
-      localStorage.setItem(CHAVE_HISTORICO, JSON.stringify(historico));
-    } catch (e) {
-      /* modo privativo ou armazenamento bloqueado: o simulado segue funcionando */
-    }
+    gravarJson(CHAVE_HISTORICO, historico);
     renderizarDesempenho();
   }
 
   function renderizarDesempenho() {
-    var historico = lerHistorico();
-    var temas = Object.keys(historico).sort();
+    var historico = lerJson(CHAVE_HISTORICO, {});
+    var rotulos = Object.keys(historico).sort();
     var cartao = $("cartao-desempenho");
 
-    if (!temas.length) {
+    if (!rotulos.length) {
       cartao.hidden = true;
       return;
     }
@@ -398,11 +577,11 @@
       "<th class='numero'>Acertos</th><th class='numero'>%</th></tr></thead>";
 
     var corpo = document.createElement("tbody");
-    temas.forEach(function (tema) {
-      var r = historico[tema];
+    rotulos.forEach(function (rotulo) {
+      var r = historico[rotulo];
       var pct = r.respondidas ? Math.round((r.acertos / r.respondidas) * 100) : 0;
       var linha = document.createElement("tr");
-      [tema, r.respondidas, r.acertos, pct + "%"].forEach(function (valor, i) {
+      [rotulo, r.respondidas, r.acertos, pct + "%"].forEach(function (valor, i) {
         var celula = document.createElement("td");
         if (i > 0) celula.className = "numero";
         celula.textContent = valor;
@@ -443,7 +622,9 @@
   function ligarEventos() {
     $("btn-todos").addEventListener("click", function () { marcarTodos(true); });
     $("btn-nenhum").addEventListener("click", function () { marcarTodos(false); });
-    $("lista-temas").addEventListener("change", atualizarDisponiveis);
+    $("lista-temas").addEventListener("change", function (e) {
+      if (e.target.name === "tema") atualizarDisponiveis();
+    });
     $("grupo-dificuldade").addEventListener("change", atualizarDisponiveis);
     $("qtd-questoes").addEventListener("input", function () {
       qtdDesejada = Number(this.value);
