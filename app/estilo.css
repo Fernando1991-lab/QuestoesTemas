@@ -1,0 +1,295 @@
+/* ===== Tokens de cor: claro por padrão, escuro conforme o sistema ===== */
+:root {
+  --fundo: #f6f7f9;
+  --superficie: #ffffff;
+  --superficie-2: #f0f2f5;
+  --borda: #dfe3e8;
+  --texto: #1c2024;
+  --texto-fraco: #5f6b76;
+  --destaque: #2f6feb;
+  --destaque-fraco: #e6efff;
+  --certo: #157f4a;
+  --certo-fraco: #e3f5ec;
+  --errado: #c02a35;
+  --errado-fraco: #fdeaec;
+  --sombra: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .1);
+  --raio: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #14171a;
+    --superficie: #1c2024;
+    --superficie-2: #23282d;
+    --borda: #333a41;
+    --texto: #e8eaed;
+    --texto-fraco: #9aa4ae;
+    --destaque: #6ea1ff;
+    --destaque-fraco: #1e2a3d;
+    --certo: #56d19a;
+    --certo-fraco: #16302a;
+    --errado: #ff8a94;
+    --errado-fraco: #3a1e22;
+    --sombra: none;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0 16px 48px;
+  background: var(--fundo);
+  color: var(--texto);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.cabecalho, main, .rodape { max-width: 760px; margin: 0 auto; }
+
+.cabecalho { padding: 28px 0 16px; }
+.cabecalho h1 { margin: 0; font-size: 1.6rem; letter-spacing: -.01em; }
+.subtitulo { margin: 4px 0 0; color: var(--texto-fraco); }
+
+.rodape { margin-top: 40px; color: var(--texto-fraco); font-size: .85rem; }
+.rodape code {
+  background: var(--superficie-2);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: .85em;
+}
+
+/* ===== Cartões ===== */
+.cartao {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.cartao h2 { margin: 0 0 4px; font-size: 1rem; }
+.ajuda { margin: 0 0 12px; color: var(--texto-fraco); font-size: .875rem; }
+
+/* ===== Botões ===== */
+button { font: inherit; cursor: pointer; }
+
+.btn-primario, .btn-secundario {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 11px 18px;
+  font-weight: 600;
+}
+.btn-primario { background: var(--destaque); color: #fff; }
+.btn-primario:hover:not(:disabled) { filter: brightness(1.08); }
+.btn-primario:disabled { opacity: .5; cursor: not-allowed; }
+.btn-secundario {
+  background: var(--superficie);
+  color: var(--texto);
+  border-color: var(--borda);
+}
+.btn-secundario:hover:not(:disabled) { background: var(--superficie-2); }
+.btn-grande { width: 100%; padding: 14px; font-size: 1.02rem; }
+
+.btn-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--destaque);
+  font-size: .875rem;
+  text-decoration: underline;
+}
+.btn-link.perigo { color: var(--errado); }
+
+.acoes-inline { display: flex; gap: 16px; margin-bottom: 10px; }
+
+/* ===== Seleção de temas e opções ===== */
+.lista-temas { display: grid; gap: 8px; }
+
+.opcao, .item-tema {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--superficie-2);
+  cursor: pointer;
+}
+.opcao:hover, .item-tema:hover { border-color: var(--destaque); }
+.opcao input, .item-tema input { margin: 3px 0 0; accent-color: var(--destaque); flex: none; }
+.opcao small, .item-tema small { color: var(--texto-fraco); font-weight: 400; }
+.item-tema .nome-tema { font-weight: 600; }
+.item-tema .info-tema { display: block; color: var(--texto-fraco); font-size: .85rem; }
+
+.grupo-radio { display: grid; gap: 8px; }
+
+.linha-quantidade { display: flex; align-items: center; gap: 14px; }
+.linha-quantidade input[type=range] { flex: 1; accent-color: var(--destaque); }
+#qtd-valor {
+  min-width: 2.5em;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.aviso {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--errado-fraco);
+  color: var(--errado);
+  font-size: .9rem;
+}
+
+/* ===== Quiz ===== */
+.barra-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: .9rem;
+}
+.contador { font-weight: 600; }
+.placar-parcial { color: var(--texto-fraco); margin-right: auto; }
+
+.barra-progresso {
+  height: 6px;
+  background: var(--superficie-2);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.preenchimento {
+  height: 100%;
+  width: 0;
+  background: var(--destaque);
+  transition: width .25s ease;
+}
+
+.etiquetas { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.etiqueta {
+  font-size: .75rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 99px;
+  background: var(--destaque-fraco);
+  color: var(--destaque);
+}
+.etiqueta.facil { background: var(--certo-fraco); color: var(--certo); }
+.etiqueta.dificil { background: var(--errado-fraco); color: var(--errado); }
+
+.enunciado { margin: 0 0 16px; font-size: 1.08rem; line-height: 1.5; }
+
+.alternativas { display: grid; gap: 8px; }
+
+.alternativa {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--superficie);
+  color: var(--texto);
+  line-height: 1.45;
+}
+.alternativa:hover:not(:disabled) { border-color: var(--destaque); background: var(--destaque-fraco); }
+.alternativa:disabled { cursor: default; }
+.alternativa .letra {
+  flex: none;
+  width: 1.6em;
+  height: 1.6em;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  background: var(--superficie-2);
+  font-size: .8rem;
+  font-weight: 700;
+}
+.alternativa.marcada { border-color: var(--destaque); background: var(--destaque-fraco); }
+.alternativa.marcada .letra { background: var(--destaque); color: #fff; }
+.alternativa.certa { border-color: var(--certo); background: var(--certo-fraco); }
+.alternativa.certa .letra { background: var(--certo); color: #fff; }
+.alternativa.errada { border-color: var(--errado); background: var(--errado-fraco); }
+.alternativa.errada .letra { background: var(--errado); color: #fff; }
+
+.feedback {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border-left: 3px solid var(--destaque);
+  background: var(--superficie-2);
+  font-size: .93rem;
+}
+.feedback.acerto { border-left-color: var(--certo); }
+.feedback.erro { border-left-color: var(--errado); }
+.feedback .titulo-feedback { display: block; font-weight: 700; margin-bottom: 4px; }
+.feedback.acerto .titulo-feedback { color: var(--certo); }
+.feedback.erro .titulo-feedback { color: var(--errado); }
+
+.acoes-rodape { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.acoes-rodape .ajuda { margin: 0; }
+.atalhos kbd {
+  background: var(--superficie-2);
+  border: 1px solid var(--borda);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: .85em;
+}
+
+/* ===== Resultado ===== */
+.cartao-resultado { text-align: center; padding: 26px 18px; }
+.nota { margin: 0; font-size: 2.6rem; font-weight: 800; letter-spacing: -.02em; }
+.resumo { margin: 4px 0 0; color: var(--texto-fraco); }
+.mensagem { margin: 12px 0 0; font-weight: 600; }
+
+.titulo-revisao { font-size: 1rem; margin: 24px 0 10px; }
+.revisao { display: grid; gap: 12px; }
+
+.item-revisao {
+  border: 1px solid var(--borda);
+  border-left-width: 3px;
+  border-radius: 8px;
+  background: var(--superficie);
+  padding: 14px 16px;
+}
+.item-revisao.acerto { border-left-color: var(--certo); }
+.item-revisao.erro { border-left-color: var(--errado); }
+.item-revisao .cabecalho-revisao {
+  display: flex;
+  gap: 8px;
+  font-size: .8rem;
+  color: var(--texto-fraco);
+  margin-bottom: 6px;
+}
+.item-revisao p { margin: 0 0 8px; }
+.item-revisao .pergunta { font-weight: 600; }
+.item-revisao .linha { font-size: .9rem; }
+.item-revisao .linha b { font-weight: 600; }
+.item-revisao .sua-resposta.errado { color: var(--errado); }
+.item-revisao .resposta-certa { color: var(--certo); }
+.item-revisao .explicacao {
+  font-size: .9rem;
+  color: var(--texto-fraco);
+  border-top: 1px solid var(--borda);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+/* ===== Tabela de desempenho ===== */
+.tabela-desempenho { width: 100%; border-collapse: collapse; font-size: .9rem; margin-bottom: 10px; }
+.tabela-desempenho th, .tabela-desempenho td {
+  text-align: left;
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--borda);
+}
+.tabela-desempenho th { color: var(--texto-fraco); font-weight: 600; }
+.tabela-desempenho td.numero { text-align: right; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 480px) {
+  .cabecalho h1 { font-size: 1.35rem; }
+  .cartao { padding: 14px; }
+  .atalhos { display: none; }
+}

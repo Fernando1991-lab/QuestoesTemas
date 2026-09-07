@@ -1,0 +1,174 @@
+{
+  "tema": "Português",
+  "descricao": "Gramática, ortografia, regência e interpretação de texto.",
+  "questoes": [
+    {
+      "id": "pt-001",
+      "enunciado": "Assinale a alternativa em que o uso da crase está CORRETO.",
+      "alternativas": [
+        "Vou à escola todos os dias.",
+        "Ele se referiu à mim durante a reunião.",
+        "Cheguei à casa muito cansado.",
+        "Comecei a estudar à partir de segunda-feira."
+      ],
+      "correta": 0,
+      "explicacao": "Ocorre crase na fusão da preposição 'a' com o artigo feminino 'a'. Em 'Vou à escola', quem vai, vai A algum lugar, e 'escola' admite o artigo 'a' (a escola). Não há crase antes de pronome pessoal ('a mim'), antes de 'casa' sem especificação, nem antes de verbo ('a partir').",
+      "dificuldade": "medio",
+      "tags": ["crase", "acentuação"]
+    },
+    {
+      "id": "pt-002",
+      "enunciado": "Qual frase está de acordo com a norma-padrão quanto à concordância verbal?",
+      "alternativas": [
+        "Faz dois anos que não o vejo.",
+        "Fazem dois anos que não o vejo.",
+        "Fazem muito tempo que ele saiu.",
+        "Faziam dias frios naquele inverno."
+      ],
+      "correta": 0,
+      "explicacao": "O verbo 'fazer' indicando tempo decorrido é impessoal: não tem sujeito e fica sempre na 3ª pessoa do singular. Por isso: 'Faz dois anos', 'Fazia dias frios'.",
+      "dificuldade": "medio",
+      "tags": ["concordância verbal", "verbo impessoal"]
+    },
+    {
+      "id": "pt-003",
+      "enunciado": "Complete corretamente: 'Ele estudou muito, ____ não passou na prova. Precisa estudar ____ ainda.'",
+      "alternativas": [
+        "mas / mais",
+        "mais / mas",
+        "mas / mas",
+        "mais / mais"
+      ],
+      "correta": 0,
+      "explicacao": "'Mas' é conjunção adversativa (ideia de oposição). 'Mais' indica quantidade ou intensidade, opondo-se a 'menos'.",
+      "dificuldade": "facil",
+      "tags": ["ortografia", "conjunções"]
+    },
+    {
+      "id": "pt-004",
+      "enunciado": "Assinale a alternativa que apresenta a regência verbal CORRETA segundo a norma-padrão.",
+      "alternativas": [
+        "Assisti ao filme ontem à noite.",
+        "Assisti o filme ontem à noite.",
+        "Prefiro mais estudar do que trabalhar.",
+        "Cheguei na escola atrasado."
+      ],
+      "correta": 0,
+      "explicacao": "No sentido de 'ver, presenciar', o verbo 'assistir' é transitivo indireto e exige a preposição 'a': assistir AO filme. Já 'preferir' não admite 'mais... do que' (prefere-se A a B), e 'chegar' pede a preposição 'a' ('cheguei à escola').",
+      "dificuldade": "medio",
+      "tags": ["regência verbal"]
+    },
+    {
+      "id": "pt-005",
+      "enunciado": "Em qual alternativa o emprego de 'onde' / 'aonde' está correto?",
+      "alternativas": [
+        "Aonde você vai com tanta pressa?",
+        "Onde você vai com tanta pressa?",
+        "A cidade aonde eu moro é pequena.",
+        "Aonde estão meus documentos?"
+      ],
+      "correta": 0,
+      "explicacao": "'Aonde' é usado com verbos que indicam movimento e exigem a preposição 'a' (ir a, chegar a): 'Aonde você vai?'. 'Onde' indica lugar fixo, sem movimento: 'A cidade onde eu moro', 'Onde estão meus documentos?'.",
+      "dificuldade": "medio",
+      "tags": ["onde x aonde", "regência"]
+    },
+    {
+      "id": "pt-006",
+      "enunciado": "Qual é o plural correto da palavra 'cidadão'?",
+      "alternativas": [
+        "cidadãos",
+        "cidadães",
+        "cidadões",
+        "cidadãoes"
+      ],
+      "correta": 0,
+      "explicacao": "'Cidadão' faz plural em -ãos: cidadãos. Outros exemplos do mesmo grupo: irmãos, mãos, grãos.",
+      "dificuldade": "facil",
+      "tags": ["plural", "morfologia"]
+    },
+    {
+      "id": "pt-007",
+      "enunciado": "Assinale a frase correta quanto ao uso dos pronomes 'eu' e 'mim'.",
+      "alternativas": [
+        "Trouxeram este livro para eu ler.",
+        "Trouxeram este livro para mim ler.",
+        "Entre eu e você não há segredos.",
+        "Não há nada entre tu e eu."
+      ],
+      "correta": 0,
+      "explicacao": "Antes de verbo no infinitivo com função de sujeito, usa-se o pronome reto: 'para EU ler'. Depois de preposição sem verbo seguinte, usa-se o oblíquo: 'entre mim e você'.",
+      "dificuldade": "medio",
+      "tags": ["pronomes", "sintaxe"]
+    },
+    {
+      "id": "pt-008",
+      "enunciado": "Qual alternativa está correta quanto ao verbo 'haver' no sentido de 'existir'?",
+      "alternativas": [
+        "Havia muitas pessoas na fila.",
+        "Haviam muitas pessoas na fila.",
+        "Houveram muitos problemas ontem.",
+        "Hão de haverem soluções."
+      ],
+      "correta": 0,
+      "explicacao": "No sentido de 'existir' ou 'acontecer', o verbo 'haver' é impessoal e permanece na 3ª pessoa do singular: 'Havia muitas pessoas', 'Houve muitos problemas'.",
+      "dificuldade": "medio",
+      "tags": ["concordância verbal", "verbo impessoal"]
+    },
+    {
+      "id": "pt-009",
+      "enunciado": "Sobre a acentuação gráfica, é correto afirmar que:",
+      "alternativas": [
+        "Todas as palavras proparoxítonas são acentuadas.",
+        "Todas as palavras paroxítonas são acentuadas.",
+        "Nenhuma palavra oxítona é acentuada.",
+        "Monossílabos nunca recebem acento."
+      ],
+      "correta": 0,
+      "explicacao": "Regra sem exceção: toda proparoxítona é acentuada (médico, lâmpada, sábado). As paroxítonas só são acentuadas em casos específicos, e há oxítonas e monossílabos acentuados (café, pá).",
+      "dificuldade": "facil",
+      "tags": ["acentuação"]
+    },
+    {
+      "id": "pt-010",
+      "enunciado": "Complete: '____ você não veio à festa? Não sei ____, mas ele faltou ____ estava doente.'",
+      "alternativas": [
+        "Por que / por quê / porque",
+        "Porque / por que / porquê",
+        "Por quê / porque / por que",
+        "Porquê / por quê / porque"
+      ],
+      "correta": 0,
+      "explicacao": "'Por que' inicia perguntas diretas; 'por quê' aparece no fim de frase, com acento; 'porque' é conjunção que introduz explicação ou causa; 'porquê' é substantivo (o porquê).",
+      "dificuldade": "dificil",
+      "tags": ["ortografia", "porquês"]
+    },
+    {
+      "id": "pt-011",
+      "enunciado": "Na frase 'Seus olhos são duas estrelas brilhantes', a figura de linguagem predominante é:",
+      "alternativas": [
+        "Metáfora",
+        "Metonímia",
+        "Hipérbole",
+        "Eufemismo"
+      ],
+      "correta": 0,
+      "explicacao": "Há metáfora quando se atribui a um termo o sentido de outro por semelhança, sem usar conectivo comparativo. Se houvesse 'como' ('olhos como estrelas'), seria comparação (símile).",
+      "dificuldade": "facil",
+      "tags": ["figuras de linguagem", "semântica"]
+    },
+    {
+      "id": "pt-012",
+      "enunciado": "Transpondo 'O professor corrigiu as provas' para a voz passiva, obtém-se:",
+      "alternativas": [
+        "As provas foram corrigidas pelo professor.",
+        "As provas corrigiram o professor.",
+        "O professor foi corrigido pelas provas.",
+        "Corrigiram-se o professor das provas."
+      ],
+      "correta": 0,
+      "explicacao": "Na voz passiva analítica, o objeto direto ('as provas') vira sujeito, o verbo principal vai para o particípio acompanhado do auxiliar 'ser' no mesmo tempo, e o sujeito original vira agente da passiva ('pelo professor').",
+      "dificuldade": "medio",
+      "tags": ["vozes verbais", "sintaxe"]
+    }
+  ]
+}

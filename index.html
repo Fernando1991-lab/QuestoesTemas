@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Questões por Tema — praticar estudos</title>
+  <link rel="stylesheet" href="app/estilo.css">
+</head>
+<body>
+  <header class="cabecalho">
+    <h1>Questões por Tema</h1>
+    <p class="subtitulo">Monte um simulado a partir do seu banco de questões.</p>
+  </header>
+
+  <main id="conteudo">
+
+    <!-- ============ TELA 1: configuração do simulado ============ -->
+    <section id="tela-config" class="tela">
+      <div class="cartao">
+        <h2>Temas</h2>
+        <p class="ajuda">Escolha um ou mais temas para o simulado.</p>
+        <div class="acoes-inline">
+          <button type="button" class="btn-link" id="btn-todos">Selecionar todos</button>
+          <button type="button" class="btn-link" id="btn-nenhum">Limpar seleção</button>
+        </div>
+        <div id="lista-temas" class="lista-temas"></div>
+      </div>
+
+      <div class="cartao">
+        <h2>Dificuldade</h2>
+        <div class="grupo-radio" id="grupo-dificuldade">
+          <label class="opcao"><input type="radio" name="dificuldade" value="todas" checked><span>Todas</span></label>
+          <label class="opcao"><input type="radio" name="dificuldade" value="facil"><span>Fácil</span></label>
+          <label class="opcao"><input type="radio" name="dificuldade" value="medio"><span>Média</span></label>
+          <label class="opcao"><input type="radio" name="dificuldade" value="dificil"><span>Difícil</span></label>
+        </div>
+      </div>
+
+      <div class="cartao">
+        <h2>Quantidade de questões</h2>
+        <div class="linha-quantidade">
+          <input type="range" id="qtd-questoes" min="1" max="50" value="10">
+          <output id="qtd-valor">10</output>
+        </div>
+        <p class="ajuda" id="qtd-disponivel"></p>
+      </div>
+
+      <div class="cartao">
+        <h2>Correção</h2>
+        <div class="grupo-radio" id="grupo-modo">
+          <label class="opcao">
+            <input type="radio" name="modo" value="imediato" checked>
+            <span>Imediata <small>— mostra o resultado a cada questão</small></span>
+          </label>
+          <label class="opcao">
+            <input type="radio" name="modo" value="final">
+            <span>Só no final <small>— estilo prova</small></span>
+          </label>
+        </div>
+      </div>
+
+      <p id="aviso-config" class="aviso" hidden></p>
+      <button type="button" id="btn-comecar" class="btn-primario btn-grande">Começar simulado</button>
+
+      <section class="cartao" id="cartao-desempenho" hidden>
+        <h2>Seu desempenho</h2>
+        <div id="tabela-desempenho"></div>
+        <button type="button" class="btn-link perigo" id="btn-limpar-historico">Apagar histórico</button>
+      </section>
+    </section>
+
+    <!-- ============ TELA 2: quiz em andamento ============ -->
+    <section id="tela-quiz" class="tela" hidden>
+      <div class="barra-topo">
+        <span id="contador" class="contador"></span>
+        <span id="placar-parcial" class="placar-parcial"></span>
+        <button type="button" class="btn-link perigo" id="btn-sair">Encerrar</button>
+      </div>
+      <div class="barra-progresso"><div id="progresso" class="preenchimento"></div></div>
+
+      <div class="cartao cartao-questao">
+        <div class="etiquetas">
+          <span id="etiqueta-tema" class="etiqueta"></span>
+          <span id="etiqueta-dificuldade" class="etiqueta"></span>
+        </div>
+        <h2 id="enunciado" class="enunciado"></h2>
+        <div id="alternativas" class="alternativas"></div>
+        <div id="feedback" class="feedback" hidden></div>
+      </div>
+
+      <div class="acoes-rodape">
+        <button type="button" id="btn-proxima" class="btn-primario" disabled>Próxima</button>
+        <p class="ajuda atalhos">Atalhos: <kbd>1</kbd>–<kbd>6</kbd> para responder, <kbd>Enter</kbd> para avançar.</p>
+      </div>
+    </section>
+
+    <!-- ============ TELA 3: resultado ============ -->
+    <section id="tela-resultado" class="tela" hidden>
+      <div class="cartao cartao-resultado">
+        <p id="nota" class="nota"></p>
+        <p id="resumo" class="resumo"></p>
+        <p id="mensagem" class="mensagem"></p>
+      </div>
+      <div class="acoes-rodape">
+        <button type="button" id="btn-refazer" class="btn-primario">Novo simulado</button>
+        <button type="button" id="btn-so-erros" class="btn-secundario">Refazer só os erros</button>
+      </div>
+      <h2 class="titulo-revisao">Revisão</h2>
+      <div id="revisao" class="revisao"></div>
+    </section>
+
+  </main>
+
+  <footer class="rodape">
+    <p>Banco local em <code>banco/*.json</code>. Depois de editar, rode <code>python3 gerar_banco.py</code>.</p>
+  </footer>
+
+  <script src="app/banco.js"></script>
+  <script src="app/app.js"></script>
+</body>
+</html>

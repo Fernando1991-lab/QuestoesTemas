@@ -1,0 +1,174 @@
+{
+  "tema": "História do Brasil",
+  "descricao": "Do período colonial à redemocratização.",
+  "questoes": [
+    {
+      "id": "hb-001",
+      "enunciado": "A Proclamação da República no Brasil ocorreu em que data e sob a liderança de quem?",
+      "alternativas": [
+        "15 de novembro de 1889, liderada pelo marechal Deodoro da Fonseca",
+        "7 de setembro de 1822, liderada por Dom Pedro I",
+        "13 de maio de 1888, liderada pela Princesa Isabel",
+        "15 de novembro de 1891, liderada por Floriano Peixoto"
+      ],
+      "correta": 0,
+      "explicacao": "Em 15 de novembro de 1889, um movimento militar liderado pelo marechal Deodoro da Fonseca depôs o gabinete imperial e proclamou a República, encerrando o reinado de Dom Pedro II. Deodoro tornou-se o primeiro presidente do país.",
+      "dificuldade": "facil",
+      "tags": ["República", "século XIX"]
+    },
+    {
+      "id": "hb-002",
+      "enunciado": "A Lei Áurea, que aboliu a escravidão no Brasil, foi assinada em:",
+      "alternativas": [
+        "13 de maio de 1888, pela Princesa Isabel",
+        "28 de setembro de 1871, por Dom Pedro II",
+        "13 de maio de 1889, pela Princesa Isabel",
+        "15 de novembro de 1888, por Deodoro da Fonseca"
+      ],
+      "correta": 0,
+      "explicacao": "A Lei Áurea foi sancionada em 13 de maio de 1888 pela Princesa Isabel, então regente do Império. O Brasil foi o último país das Américas a abolir oficialmente a escravidão.",
+      "dificuldade": "facil",
+      "tags": ["abolição", "Império"]
+    },
+    {
+      "id": "hb-003",
+      "enunciado": "A Independência do Brasil foi proclamada em 7 de setembro de 1822 por:",
+      "alternativas": [
+        "Dom Pedro I, às margens do rio Ipiranga",
+        "Dom Pedro II, no Rio de Janeiro",
+        "José Bonifácio, em São Paulo",
+        "Dom João VI, em Lisboa"
+      ],
+      "correta": 0,
+      "explicacao": "Dom Pedro I proclamou a independência às margens do riacho Ipiranga, em São Paulo. José Bonifácio de Andrada e Silva, o 'Patriarca da Independência', foi seu principal articulador político, mas não o proclamador.",
+      "dificuldade": "facil",
+      "tags": ["Independência", "Império"]
+    },
+    {
+      "id": "hb-004",
+      "enunciado": "O Estado Novo, período mais autoritário da Era Vargas, foi instaurado em:",
+      "alternativas": [
+        "1937, com a outorga de uma nova Constituição e o fechamento do Congresso",
+        "1930, com a Revolução que levou Vargas ao poder",
+        "1945, com a deposição de Vargas",
+        "1932, durante a Revolução Constitucionalista"
+      ],
+      "correta": 0,
+      "explicacao": "Em 10 de novembro de 1937, Getúlio Vargas deu um golpe, fechou o Congresso Nacional e outorgou a Constituição conhecida como 'Polaca', inaugurando o Estado Novo, que durou até 1945.",
+      "dificuldade": "medio",
+      "tags": ["Era Vargas", "século XX"]
+    },
+    {
+      "id": "hb-005",
+      "enunciado": "O golpe militar que iniciou a ditadura no Brasil ocorreu em:",
+      "alternativas": [
+        "31 de março / 1º de abril de 1964, depondo João Goulart",
+        "1961, depondo Jânio Quadros",
+        "1968, com a edição do AI-5",
+        "1985, com a eleição de Tancredo Neves"
+      ],
+      "correta": 0,
+      "explicacao": "O golpe teve início em 31 de março de 1964 e se consolidou em 1º de abril, depondo o presidente João Goulart. O regime militar durou até 1985. O AI-5, de 1968, foi o ato mais repressivo do período, mas não o seu início.",
+      "dificuldade": "medio",
+      "tags": ["ditadura militar", "século XX"]
+    },
+    {
+      "id": "hb-006",
+      "enunciado": "A Inconfidência Mineira (1789) teve como principal característica:",
+      "alternativas": [
+        "Um movimento de elite mineira contra a cobrança da derrama, que pretendia tornar Minas Gerais independente",
+        "Uma revolta popular de escravizados pela abolição imediata",
+        "Um movimento republicano vitorioso que proclamou a independência de Minas",
+        "Uma rebelião militar contra o governo de Dom Pedro I"
+      ],
+      "correta": 0,
+      "explicacao": "A Inconfidência Mineira foi articulada por membros da elite letrada de Minas Gerais, insatisfeitos com a alta tributação do ouro e com a ameaça da derrama. O movimento foi denunciado antes de eclodir; Tiradentes foi o único condenado à morte, enforcado em 1792.",
+      "dificuldade": "medio",
+      "tags": ["período colonial", "movimentos nativistas"]
+    },
+    {
+      "id": "hb-007",
+      "enunciado": "A campanha das Diretas Já, em 1983-1984, tinha como objetivo:",
+      "alternativas": [
+        "Aprovar a emenda que restabeleceria eleições diretas para presidente da República",
+        "Convocar uma Assembleia Constituinte para redigir a Constituição de 1988",
+        "Anistiar os presos políticos do regime militar",
+        "Impedir a posse de Tancredo Neves"
+      ],
+      "correta": 0,
+      "explicacao": "As Diretas Já mobilizaram grandes comícios em favor da Emenda Dante de Oliveira, que restabeleceria a eleição direta para presidente. A emenda foi rejeitada na Câmara em abril de 1984, e Tancredo Neves acabou eleito indiretamente pelo Colégio Eleitoral em 1985.",
+      "dificuldade": "medio",
+      "tags": ["redemocratização", "século XX"]
+    },
+    {
+      "id": "hb-008",
+      "enunciado": "A atual Constituição brasileira, apelidada de 'Constituição Cidadã', foi promulgada em:",
+      "alternativas": [
+        "5 de outubro de 1988",
+        "15 de março de 1985",
+        "21 de abril de 1989",
+        "1º de janeiro de 1990"
+      ],
+      "correta": 0,
+      "explicacao": "A Constituição Federal foi promulgada em 5 de outubro de 1988, fruto da Assembleia Nacional Constituinte presidida por Ulysses Guimarães, que a batizou de 'Constituição Cidadã' pela ampliação dos direitos sociais e individuais.",
+      "dificuldade": "facil",
+      "tags": ["redemocratização", "Constituição"]
+    },
+    {
+      "id": "hb-009",
+      "enunciado": "A Guerra do Paraguai (1864-1870) opôs o Paraguai a qual aliança?",
+      "alternativas": [
+        "Tríplice Aliança, formada por Brasil, Argentina e Uruguai",
+        "Brasil e Bolívia apenas",
+        "Tríplice Aliança, formada por Brasil, Chile e Peru",
+        "Brasil e Portugal"
+      ],
+      "correta": 0,
+      "explicacao": "Foi o maior conflito armado da América do Sul. O Paraguai, sob Solano López, enfrentou a Tríplice Aliança (Brasil, Argentina e Uruguai) e saiu devastado demográfica e economicamente.",
+      "dificuldade": "medio",
+      "tags": ["Império", "conflitos"]
+    },
+    {
+      "id": "hb-010",
+      "enunciado": "A chegada da esquadra portuguesa comandada por Pedro Álvares Cabral ao litoral brasileiro ocorreu em:",
+      "alternativas": [
+        "1500, no litoral do atual estado da Bahia",
+        "1492, no litoral de Pernambuco",
+        "1530, no litoral de São Vicente",
+        "1494, após o Tratado de Tordesilhas"
+      ],
+      "correta": 0,
+      "explicacao": "A esquadra de Cabral chegou em abril de 1500 à região onde hoje fica Porto Seguro, na Bahia. O Tratado de Tordesilhas é anterior (1494) e 1530 marca o início da colonização efetiva, com Martim Afonso de Sousa.",
+      "dificuldade": "facil",
+      "tags": ["período colonial"]
+    },
+    {
+      "id": "hb-011",
+      "enunciado": "A Revolta da Vacina, ocorrida no Rio de Janeiro em 1904, foi motivada por:",
+      "alternativas": [
+        "A vacinação obrigatória contra a varíola somada às reformas urbanas autoritárias de Pereira Passos",
+        "A cobrança de novos impostos sobre alimentos durante o Império",
+        "A adesão do Brasil à Primeira Guerra Mundial",
+        "A abolição da escravidão e a falta de políticas para os libertos"
+      ],
+      "correta": 0,
+      "explicacao": "A lei da vacinação obrigatória contra a varíola, conduzida por Oswaldo Cruz sem campanha de esclarecimento, somou-se à revolta popular contra as demolições de cortiços promovidas pela reforma urbana do prefeito Pereira Passos.",
+      "dificuldade": "dificil",
+      "tags": ["República Velha", "século XX"]
+    },
+    {
+      "id": "hb-012",
+      "enunciado": "A Lei do Ventre Livre (1871) determinou que:",
+      "alternativas": [
+        "Os filhos de mulheres escravizadas nascidos a partir daquela data seriam considerados livres",
+        "Todos os escravizados com mais de 60 anos seriam libertados",
+        "A escravidão estava imediatamente abolida em todo o Império",
+        "O tráfico de africanos escravizados ficava proibido"
+      ],
+      "correta": 0,
+      "explicacao": "A Lei do Ventre Livre, ou Lei Rio Branco, libertou os nascidos de mulheres escravizadas a partir de 1871. A libertação dos maiores de 60 anos veio com a Lei dos Sexagenários (1885), e a proibição do tráfico, com a Lei Eusébio de Queirós (1850).",
+      "dificuldade": "medio",
+      "tags": ["abolição", "Império"]
+    }
+  ]
+}
