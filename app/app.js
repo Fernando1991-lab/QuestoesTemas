@@ -64,6 +64,7 @@
   function montarArvore() {
     var raiz = { caminho: [], nome: "", descricao: "", filhos: [], temas: [] };
     var indice = { "": raiz };
+    porChave = {};   // reconstruído do zero: a árvore é remontada a cada mudança
 
     // Pastas rasas primeiro, para o pai já existir quando o filho chegar.
     // O sort é estável, então a ordem definida em _pasta.json é preservada.
@@ -272,6 +273,12 @@
     var corpo = document.createElement("div");
     corpo.className = "conteudo-pasta";
     preencher(no, corpo);
+    if (!no.filhos.length && !no.temas.length) {
+      var vazia = document.createElement("p");
+      vazia.className = "pasta-vazia";
+      vazia.textContent = "Grupo vazio.";
+      corpo.appendChild(vazia);
+    }
     det.appendChild(corpo);
 
     return det;
@@ -653,4 +660,18 @@
   ligarEventos();
   atualizarDisponiveis();
   renderizarDesempenho();
+
+  // Superfície usada por organizar.js. Mantida pequena de propósito: o
+  // organizador altera 'temas'/'pastas' e pede uma remontagem.
+  window.QT = {
+    temas: temas,
+    pastas: pastas,
+    lerJson: lerJson,
+    gravarJson: gravarJson,
+    remontar: function () {
+      arvore = montarArvore();
+      montarListaTemas();
+      atualizarDisponiveis();
+    }
+  };
 })();

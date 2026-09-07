@@ -5,6 +5,14 @@ window.BANCO_QUESTOES = {
   "pastas": [
     {
       "caminho": [
+        "Geral"
+      ],
+      "nome": "Geral",
+      "descricao": "Onde as questões novas chegam, antes de você organizá-las.",
+      "ordem": 0
+    },
+    {
+      "caminho": [
         "Linguagens"
       ],
       "nome": "Linguagens",

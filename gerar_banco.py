@@ -208,12 +208,6 @@ def main(argv: list[str]) -> int:
     arquivos = sorted(
         p for p in DIR_BANCO.rglob("*.json") if not p.name.startswith("_")
     )
-    if not arquivos:
-        print(
-            f"erro: nenhum arquivo .json de questões em '{DIR_BANCO.name}/'",
-            file=sys.stderr,
-        )
-        return 1
 
     temas: list[dict] = []
     erros: list[str] = []
@@ -223,12 +217,19 @@ def main(argv: list[str]) -> int:
         except ErroDeValidacao as e:
             erros.append(str(e))
 
-    # Toda pasta que contenha temas (e as pastas-pai dela) vira um grupo.
+    # Vira grupo toda pasta que contenha temas e toda pasta que declare um
+    # _pasta.json — esta segunda regra é o que permite existir um grupo ainda
+    # vazio, criado para receber temas depois.
     caminhos_pastas: set[tuple[str, ...]] = set()
-    for tema in temas:
-        partes = tuple(tema["caminho"])
+
+    def registrar(partes: tuple[str, ...]) -> None:
         for i in range(1, len(partes) + 1):
             caminhos_pastas.add(partes[:i])
+
+    for tema in temas:
+        registrar(tuple(tema["caminho"]))
+    for marcador in DIR_BANCO.rglob(ARQUIVO_PASTA):
+        registrar(tuple(marcador.parent.relative_to(DIR_BANCO).parts))
 
     pastas: list[dict] = []
     for partes in sorted(caminhos_pastas):
@@ -282,6 +283,11 @@ def main(argv: list[str]) -> int:
         print(f"  {prefixo}{tema['tema']}: {len(tema['questoes'])} questões")
 
     total = sum(len(t["questoes"]) for t in temas)
+    vazias = [p["nome"] for p in pastas if not any(
+        t["caminho"][: len(p["caminho"])] == p["caminho"] for t in temas
+    )]
+    if vazias:
+        print("  (pastas ainda sem questões: " + ", ".join(vazias) + ")")
     print(
         f"\nTotal: {total} questões em {len(temas)} tema(s) "
         f"e {len(pastas)} pasta(s)."

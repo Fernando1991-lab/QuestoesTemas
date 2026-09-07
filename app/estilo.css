@@ -351,3 +351,111 @@ button { font: inherit; cursor: pointer; }
   .cartao { padding: 14px; }
   .atalhos { display: none; }
 }
+
+/* ===== Modo organizar ===== */
+.barra-organizar {
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--superficie-2);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.dica-organizar { margin: 0 0 10px; }
+
+.linha-organizar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.resumo-organizar {
+  margin-right: auto;
+  font-size: .85rem;
+  color: var(--texto-fraco);
+}
+.btn-mini { padding: 7px 12px; font-size: .85rem; }
+
+.status-organizar { margin: 10px 0 0; font-size: .85rem; }
+.status-organizar:empty { display: none; }
+.status-organizar.ok { color: var(--certo); }
+.status-organizar.erro { color: var(--errado); }
+
+/* Só no modo organizar as caixas de seleção saem de cena: elas escolhem o
+   que cai no simulado, não têm papel enquanto se arruma o banco. */
+.modo-organizar .item-tema input[name=tema],
+.modo-organizar .check-pasta { display: none; }
+
+.modo-organizar .item-tema {
+  cursor: grab;
+  border-style: dashed;
+}
+.modo-organizar .item-tema::before {
+  content: "⠿";
+  color: var(--texto-fraco);
+  flex: none;
+  line-height: 1.3;
+}
+.item-tema.arrastando { opacity: .4; }
+
+.alvo-drop { outline: 2px solid var(--destaque); outline-offset: 1px; }
+#lista-temas.alvo-drop { border-radius: 8px; }
+
+.acoes-pasta { display: flex; gap: 2px; margin-left: 8px; }
+.acao-pasta {
+  border: 1px solid var(--borda);
+  background: var(--superficie);
+  color: var(--texto-fraco);
+  border-radius: 5px;
+  width: 24px;
+  height: 24px;
+  line-height: 1;
+  padding: 0;
+  font-size: .85rem;
+}
+.acao-pasta:hover { color: var(--destaque); border-color: var(--destaque); }
+
+.pasta-vazia {
+  margin: 0;
+  padding: 4px 2px;
+  color: var(--texto-fraco);
+  font-size: .85rem;
+  font-style: italic;
+}
+
+/* ===== Painel de conexão com o GitHub ===== */
+.painel-token {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--superficie);
+}
+.painel-token h3 { margin: 0 0 6px; font-size: .95rem; }
+.painel-token .ajuda.erro { color: var(--errado); }
+
+.campo { display: grid; gap: 4px; margin-bottom: 8px; }
+.campo span { font-size: .8rem; color: var(--texto-fraco); font-weight: 600; }
+.campo input {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  background: var(--superficie-2);
+  color: var(--texto);
+}
+.campo input:focus { outline: 2px solid var(--destaque); outline-offset: -1px; }
+
+.zona-raiz {
+  border: 1px dashed var(--borda);
+  border-radius: 8px;
+  padding: 14px 12px;
+  text-align: center;
+  color: var(--texto-fraco);
+  font-size: .85rem;
+}
+.zona-raiz.alvo-drop { border-style: solid; color: var(--destaque); }
+
+/* Controles que só fazem sentido fora do modo organizar. */
+.modo-organizar #btn-todos,
+.modo-organizar #btn-nenhum,
+.modo-organizar #ajuda-temas { display: none; }

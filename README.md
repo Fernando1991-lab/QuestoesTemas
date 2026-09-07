@@ -37,6 +37,8 @@ banco/
 └── avulso.json              arquivo solto na raiz aparece sem grupo
 ```
 
+A pasta `Geral/` existe para receber questões novas antes de você triá-las.
+
 No app, cada pasta vira um grupo que você abre, fecha e marca por inteiro.
 A caixa da pasta fica com um traço quando só parte dos temas dentro dela está
 selecionada. O app lembra quais grupos você deixou abertos.
@@ -63,6 +65,60 @@ campo `"ordem"` para a mesma finalidade.
 
 Arquivos cujo nome começa com `_` nunca são lidos como banco de questões —
 é assim que o `_pasta.json` não vira um tema.
+
+## Organizando pelo site (modo Organizar)
+
+Além de mover arquivos na mão, dá para reorganizar o banco pela própria página
+e gravar o resultado direto no repositório.
+
+Clique em **Organizar**, na caixa de Temas. A lista vira um editor:
+
+- **arraste** um tema para dentro de outro grupo;
+- **+** cria um subgrupo, **✎** renomeia, **×** exclui um grupo vazio;
+- **Novo grupo** cria um grupo na raiz;
+- a faixa **Sem grupo**, no fim da lista, tira um tema de todos os grupos.
+
+Nada é gravado enquanto você não clicar em **Salvar no GitHub**. O botão mostra
+quantas mudanças estão pendentes, e **Descartar** recarrega a página jogando
+tudo fora.
+
+> **Arrastar e soltar é de mouse.** Em celular e tablet o gesto de toque não
+> aciona o drag-and-drop do navegador, então o modo Organizar hoje é utilizável
+> no computador.
+
+### O que o Salvar faz
+
+Um único commit na branch configurada, contendo:
+
+- o arquivo do tema movido — o mesmo conteúdo, no caminho novo (é um *move*
+  de verdade: nada é reescrito nem reformatado);
+- o `_pasta.json` dos grupos criados, renomeados ou removidos;
+- o `app/banco.js` regerado, byte a byte igual ao que o `gerar_banco.py`
+  produziria, para os dois caminhos não desfazerem o trabalho um do outro.
+
+Cerca de um minuto depois, o GitHub Pages republica o site já atualizado.
+
+### Conectando ao GitHub
+
+Na primeira vez que você mandar salvar, aparece o painel de conexão. Ele pede um
+**fine-grained personal access token**, que você cria em
+[github.com/settings/personal-access-tokens](https://github.com/settings/personal-access-tokens/new)
+com:
+
+- **Repository access**: apenas este repositório;
+- **Permissions → Contents**: `Read and write`;
+- uma **data de expiração** curta, que você renova quando vencer.
+
+Sobre esse token, sem rodeios:
+
+- ele fica no `localStorage` **do seu navegador** e nunca vai para o
+  repositório — mas qualquer pessoa com acesso ao seu navegador desbloqueado
+  consegue lê-lo;
+- por isso ele deve ser restrito a este repositório e a `Contents`, e nada mais;
+- outras pessoas que abrirem o site publicado **não** conseguem salvar: elas não
+  têm o seu token, e o token não é publicado em lugar nenhum;
+- **Conexão → Remover token deste navegador** apaga o token. Se desconfiar dele,
+  revogue direto nas configurações do GitHub — isso invalida o token na hora.
 
 ## Como adicionar ou trocar questões
 
@@ -133,6 +189,7 @@ Detalhes que evitam erro:
 index.html          telas do app
 app/estilo.css      estilos (tema claro e escuro, conforme o sistema)
 app/app.js          lógica do simulado
+app/organizar.js    modo Organizar: arrastar grupos e gravar via API do GitHub
 app/banco.js        GERADO — não edite à mão
 banco/              as questões: um arquivo por tema, pastas viram grupos
 banco/**/_pasta.json  opcional: nome, descrição e ordem de um grupo
