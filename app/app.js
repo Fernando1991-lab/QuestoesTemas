@@ -200,8 +200,14 @@
   /* ---------- tela de configuração ---------- */
 
   function criarTema(t) {
+    // Um contêiner com o label dentro, e não um label envolvendo tudo: assim o
+    // modo organizar pode acrescentar controles próprios sem que cliques neles
+    // sejam capturados pelo label e desviados para a caixa de seleção.
+    var item = document.createElement("div");
+    item.className = "item-tema";
+
     var label = document.createElement("label");
-    label.className = "item-tema";
+    label.className = "rotulo-tema";
 
     var input = document.createElement("input");
     input.type = "checkbox";
@@ -222,7 +228,8 @@
     texto.appendChild(info);
     label.appendChild(input);
     label.appendChild(texto);
-    return label;
+    item.appendChild(label);
+    return item;
   }
 
   function criarPasta(no) {

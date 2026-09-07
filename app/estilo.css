@@ -106,17 +106,20 @@ button { font: inherit; cursor: pointer; }
 .lista-temas { display: grid; gap: 10px; }
 
 .opcao, .item-tema {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
   padding: 10px 12px;
   border: 1px solid var(--borda);
   border-radius: 8px;
   background: var(--superficie-2);
   cursor: pointer;
 }
+.opcao, .rotulo-tema {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.rotulo-tema { cursor: pointer; }
 .opcao:hover, .item-tema:hover { border-color: var(--destaque); }
-.opcao input, .item-tema input { margin: 3px 0 0; accent-color: var(--destaque); flex: none; }
+.opcao input, .rotulo-tema input { margin: 3px 0 0; accent-color: var(--destaque); flex: none; }
 .opcao small, .item-tema small { color: var(--texto-fraco); font-weight: 400; }
 .item-tema .nome-tema { font-weight: 600; }
 .item-tema .info-tema { display: block; color: var(--texto-fraco); font-size: .85rem; }
@@ -389,7 +392,7 @@ button { font: inherit; cursor: pointer; }
   cursor: grab;
   border-style: dashed;
 }
-.modo-organizar .item-tema::before {
+.modo-organizar .rotulo-tema::before {
   content: "⠿";
   color: var(--texto-fraco);
   flex: none;
@@ -459,3 +462,33 @@ button { font: inherit; cursor: pointer; }
 .modo-organizar #btn-todos,
 .modo-organizar #btn-nenhum,
 .modo-organizar #ajuda-temas { display: none; }
+
+/* "Mover para": alternativa ao arrastar que funciona em tela de toque,
+   já que o drag-and-drop do navegador não responde a gestos. */
+.linha-mover {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: .8rem;
+  color: var(--texto-fraco);
+}
+.mover-para {
+  font: inherit;
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  background: var(--superficie);
+  color: var(--texto);
+}
+.mover-para:focus { outline: 2px solid var(--destaque); outline-offset: -1px; }
+
+/* Em telas de toque o drag-and-drop do navegador não responde a gestos, então
+   os elementos que só servem para arrastar saem de cena e sobra o "Mover para". */
+@media (pointer: coarse) {
+  .modo-organizar .rotulo-tema::before { content: none; }
+  .modo-organizar .item-tema { cursor: default; }
+  .zona-raiz { display: none; }
+}

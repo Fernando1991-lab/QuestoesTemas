@@ -141,6 +141,25 @@
     });
   }
 
+  function rotuloDoCaminho(caminho) {
+    var nomes = {};
+    QT.pastas.forEach(function (p) { nomes[p.caminho.join("/")] = p.nome; });
+    return caminho.map(function (seg, i) {
+      return nomes[caminho.slice(0, i + 1).join("/")] || seg;
+    }).join(" › ");
+  }
+
+  // Todos os destinos possíveis, na mesma ordem em que aparecem na tela.
+  function destinos() {
+    var lista = [{ chave: "", rotulo: "Sem grupo" }];
+    QT.pastas.slice().sort(function (a, b) {
+      return compararCadeia(chaveDeOrdem(a.caminho), chaveDeOrdem(b.caminho));
+    }).forEach(function (p) {
+      lista.push({ chave: p.caminho.join("/"), rotulo: rotuloDoCaminho(p.caminho) });
+    });
+    return lista;
+  }
+
   function compararCadeia(a, b) {
     var n = Math.min(a.length, b.length);
     for (var i = 0; i < n; i++) {
@@ -412,8 +431,43 @@
   function decorar() {
     var lista = $("lista-temas");
 
+    var opcoes = destinos();
+
     Array.prototype.forEach.call(lista.querySelectorAll(".item-tema"), function (item) {
       item.draggable = true;
+
+      var campo = item.querySelector("input[name=tema]");
+      if (!campo) return;
+      // Desabilitado enquanto organiza: a caixa está escondida, mas um clique
+      // no rótulo ainda a alternaria, mudando em silêncio o que entra no
+      // simulado.
+      campo.disabled = true;
+
+      if (item.querySelector(".mover-para")) return;
+
+      var linha = document.createElement("span");
+      linha.className = "linha-mover";
+
+      var seletor = document.createElement("select");
+      seletor.className = "mover-para";
+      seletor.title = "Mover para outro grupo";
+      opcoes.forEach(function (o) {
+        var op = document.createElement("option");
+        op.value = o.chave;
+        op.textContent = o.rotulo;
+        seletor.appendChild(op);
+      });
+      // O grupo atual do tema vem da pasta que o contém na árvore.
+      var dono = item.closest("details.pasta");
+      seletor.value = dono ? (dono.dataset.caminho || "") : "";
+
+      seletor.addEventListener("change", function () {
+        mover(campo.value, seletor.value ? seletor.value.split("/") : []);
+      });
+
+      linha.appendChild(document.createTextNode("Mover para "));
+      linha.appendChild(seletor);
+      item.appendChild(linha);
     });
 
     if (!lista.querySelector(".zona-raiz")) {
@@ -457,7 +511,7 @@
     $("barra-organizar").hidden = !organizando;
     $("btn-organizar").textContent = organizando ? "Concluir organização" : "Organizar";
     if (organizando) { iniciarSnapshot(); decorar(); atualizarBarra(); }
-    else { $("painel-token").hidden = true; informar(""); }
+    else { $("painel-token").hidden = true; informar(""); QT.remontar(); }
   }
 
   function descartar() {
@@ -519,6 +573,7 @@
     lista.addEventListener("dragstart", function (e) {
       var item = e.target.closest && e.target.closest(".item-tema");
       if (!organizando || !item) return;
+      if (e.target.closest(".linha-mover")) return;
       var campo = item.querySelector("input[name=tema]");
       if (!campo) return;
       arrastando = campo.value;

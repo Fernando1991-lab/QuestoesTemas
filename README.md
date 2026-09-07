@@ -73,18 +73,20 @@ e gravar o resultado direto no repositório.
 
 Clique em **Organizar**, na caixa de Temas. A lista vira um editor:
 
-- **arraste** um tema para dentro de outro grupo;
+- **Mover para**, embaixo de cada tema, troca o grupo dele. É o caminho que
+  funciona em qualquer aparelho, inclusive celular;
+- no computador dá para **arrastar** o tema para dentro de outro grupo, e soltar
+  na faixa **Sem grupo** para tirá-lo de todos;
 - **+** cria um subgrupo, **✎** renomeia, **×** exclui um grupo vazio;
-- **Novo grupo** cria um grupo na raiz;
-- a faixa **Sem grupo**, no fim da lista, tira um tema de todos os grupos.
+- **Novo grupo** cria um grupo na raiz.
 
 Nada é gravado enquanto você não clicar em **Salvar no GitHub**. O botão mostra
 quantas mudanças estão pendentes, e **Descartar** recarrega a página jogando
 tudo fora.
 
-> **Arrastar e soltar é de mouse.** Em celular e tablet o gesto de toque não
-> aciona o drag-and-drop do navegador, então o modo Organizar hoje é utilizável
-> no computador.
+> O arrastar depende de mouse — o drag-and-drop do navegador não responde a
+> gestos de toque. Em telas de toque a alça de arrastar e a faixa "Sem grupo"
+> ficam ocultas, e o **Mover para** cobre as duas funções.
 
 ### O que o Salvar faz
 
